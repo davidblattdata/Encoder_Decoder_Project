@@ -7,11 +7,12 @@ Created on Wed May 24 14:13:01 2023
 
 import sys
 
-letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-points = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]
-
-lp = {key:value for key, value in zip(letters, points)}
-pl = {key:value for key, value in zip(points, letters)}
+letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')']
+numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71]
+print(len(letters))
+print(len(numbers))
+letter_to_num_dict = {key:value for key, value in zip(letters, numbers)}
+num_to_letter_dict = {key:value for key, value in zip(numbers, letters)}
     
 alph = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
     
@@ -25,12 +26,11 @@ def vigenere_encoder(message, keyword):
         if let == ' ':
             new_string += ' '
             continue
-        num = lp[let]
-        numk = lp[keyword[count % len(keyword)]]
-        letn = pl[(num + numk + 1) % 52]
+        message_num_by_letter = letter_to_num_dict[let]
+        keyword_num_by_letter = letter_to_num_dict[keyword[count % len(keyword)]]
+        letn = num_to_letter_dict[(message_num_by_letter + keyword_num_by_letter + 1) % len(numbers)]
         new_string += letn
         count += 1
-    print('Test 3: ' + message)
     return new_string
 
 def vigenere_decoder(message, keyword):
@@ -41,9 +41,9 @@ def vigenere_decoder(message, keyword):
         if let == ' ':
             new_string += ' '
             continue
-        num = lp[let]
-        numk = lp[keyword[count % len(keyword)]]
-        letn = pl[(num - numk - 1) % 52]
+        message_num_by_letter = letter_to_num_dict[let]
+        keyword_num_by_letter = letter_to_num_dict[keyword[count % len(keyword)]]
+        letn = num_to_letter_dict[(message_num_by_letter - keyword_num_by_letter - 1) % len(numbers)]
         new_string += letn
         count += 1
     return new_string
@@ -51,6 +51,34 @@ def vigenere_decoder(message, keyword):
 def exit_program():
     print('Program Ending...')
     sys.exit(0)
+
+def input_message():
+    while True:
+        message = input('Enter a message: ')
+        
+        for let in message:
+            if let not in letters:
+                print('Must be letter, number, or sign')
+                continue
+            else:
+                break
+        break
+        
+    return message
+
+def input_keyword():
+    while True:
+        keyword = input('Enter a keyword: ')
+        
+        for let in keyword:
+            if let not in letters:
+                print('Must be letter, number, or sign')
+                continue
+            else:
+                break
+        break
+        
+    return keyword
 
 def input_coder():
     print("\nWelcome to Vigenere Decoder!")
@@ -69,30 +97,5 @@ def input_coder():
             message = input_message()
             keyword = input_keyword()
             print("\nYour decoded message is: " + str(vigenere_decoder(message, keyword) + "."))
-
-
-def input_message():
-    while True:
-        message = input('Enter a message: ')
-        if message[0] not in alph:
-            print("You need to imput a letter message.")
-            continue
-        else:
-            break
         
-    return message
-
-def input_keyword():
-    while True:
-        keyword = input('Enter a keyword: ')
- 
-        if keyword[0] not in alph:
-            print("You need to imput a letter message.")
-            continue
-        else:
-            break
-        
-    return keyword
-        
-
 input_coder()
